@@ -84,6 +84,8 @@ app.post('/api/papers', upload.single('file'), async (req, res) => {
     try {
         const { code, name, department, semester, scheme, examType, year, contentType } = req.body
 
+        console.log('Upload received - code:', code, 'name:', name)
+
         // Upload to Cloudinary
         const cloudResult = await cloudinary.uploader.upload(req.file.path, {
             resource_type: 'raw',
@@ -101,7 +103,10 @@ app.post('/api/papers', upload.single('file'), async (req, res) => {
             fileSizeKB: Math.round(req.file.size / 1024),
         })
 
-        await Subject.findOneAndUpdate(
+        console.log('Paper created:', newPaper._id)
+        console.log('Upsert code:', code.toUpperCase(), 'name:', name)
+
+        const upsertResult = await Subject.findOneAndUpdate(
             { code: code.toUpperCase() },
             {
                 $setOnInsert: {
@@ -116,6 +121,8 @@ app.post('/api/papers', upload.single('file'), async (req, res) => {
             { upsert: true, new: true }
         )
 
+        console.log('Upsert result:', JSON.stringify(upsertResult))
+
         res.status(201).json(newPaper)
     } catch (err) {
         console.error('Upload error:', err)
@@ -126,6 +133,15 @@ app.post('/api/papers', upload.single('file'), async (req, res) => {
 app.get('/api/papers/:code', async (req, res) => {
     const papers = await Paper.find({ code: req.params.code })
     res.json(papers)
+})
+
+app.post('/api/requests/:id/upvote', async (req, res) => {
+    const updated = await Request.findByIdAndUpdate(
+        req.params.id,
+        { $inc: { upvotes: 1 } },
+        { new: true }
+    )
+    res.json(updated)
 })
 
 app.post('/api/scan', upload.single('file'), async (req, res) => {
