@@ -8,6 +8,7 @@ const paperSchema = new mongoose.Schema({
     scheme: String,
     examType: { type: String, required: true },
     year: { type: Number, required: true },
+    contentType: { type: String, default: 'Question Paper' },
     fileUrl: { type: String, required: true },
     fileSizeKB: Number,
     verifiedCount: { type: Number, default: 0 },
