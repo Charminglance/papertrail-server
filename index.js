@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import multer from 'multer'
 import path from 'path'
-import fs from 'fs'
+import fs, { mkdirSync } from 'fs'
 import { PDFParse } from 'pdf-parse'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { v2 as cloudinary } from 'cloudinary'
@@ -13,6 +13,7 @@ import Request from './models/Request.js'
 import Paper from './models/Paper.js'
 
 dotenv.config()
+mkdirSync('uploads', { recursive: true })
 
 const app = express()
 const PORT = 5000
