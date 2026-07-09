@@ -16,4 +16,4 @@ const paperSchema = new mongoose.Schema({
 
 const Paper = mongoose.model('Paper', paperSchema)
 
-export default Papergit
+export default Paper
