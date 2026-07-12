@@ -115,7 +115,13 @@ app.post('/api/papers', upload.single('file'), async (req, res) => {
                     department: department || '',
                     semester: semester ? Number(semester) : null,
                     scheme: scheme || '',
-                    papers: [],
+                },
+                $push: {
+                    papers: {
+                        examType,
+                        year,
+                        fileSizeKB: newPaper.fileSizeKB,
+                    },
                 },
             },
             { upsert: true, new: true }
